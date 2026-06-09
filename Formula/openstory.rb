@@ -31,10 +31,16 @@ class Openstory < Formula
   end
 
   service do
+    # `--manage-nats` makes serve launch and supervise a JetStream nats-server
+    # itself (Homebrew's nats-server runs without JetStream), so a single
+    # `brew services start openstory` brings up the whole stack. `--nats-bin`
+    # passes the resolved keg path because launchd's PATH is minimal.
     run [
       opt_bin/"open-story", "serve",
       "--static-dir", "#{HOMEBREW_PREFIX}/share/openstory/static",
-      "--data-dir", "#{HOMEBREW_PREFIX}/var/openstory"
+      "--data-dir", "#{HOMEBREW_PREFIX}/var/openstory",
+      "--manage-nats",
+      "--nats-bin", "#{Formula["nats-server"].opt_bin}/nats-server"
     ]
     keep_alive true
     log_path var/"log/openstory.log"
@@ -43,10 +49,13 @@ class Openstory < Formula
 
   def caveats
     <<~EOS
-      OpenStory needs a running NATS JetStream server.
+      OpenStory brings up everything it needs — it launches a JetStream
+      NATS server automatically, so there's no separate step.
 
-      Start NATS first, then OpenStory:
-          brew services start nats-server
+      Guided setup (history window, watch dir, port — then starts the service):
+          open-story init --data-dir #{var}/openstory
+
+      Or just start the service:
           brew services start openstory
 
       Open the dashboard:
