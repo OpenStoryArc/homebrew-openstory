@@ -1,10 +1,15 @@
 class Openstory < Formula
   desc "Real-time visibility into AI coding agent behavior — observe, never interfere"
   homepage "https://github.com/OpenStoryArc/OpenStory"
-  url "https://github.com/OpenStoryArc/OpenStory/archive/refs/tags/v0.3.0.tar.gz"
-  sha256 "8899d6e45949b29068e7cb41934dab80869a96fc6bae643c68e4d285227b25c7"
+  url "https://github.com/OpenStoryArc/OpenStory/archive/refs/tags/v0.4.0.tar.gz"
+  sha256 "ca18b250ecb54b16408d63011204b192864e07f63498a12b1d95f5593c09b691"
   license "Apache-2.0"
   head "https://github.com/OpenStoryArc/OpenStory.git", branch: "master"
+
+  bottle do
+    root_url "https://github.com/OpenStoryArc/OpenStory/releases/download/v0.4.0"
+    sha256 cellar: :any_skip_relocation, arm64_sonoma: "b8abc095f68b257a99a7967d0b257579128493c319713b151abbccc68e2a49bf"
+  end
 
   depends_on "node" => :build
   depends_on "rust" => :build
@@ -40,7 +45,7 @@ class Openstory < Formula
       "--static-dir", "#{HOMEBREW_PREFIX}/share/openstory/static",
       "--data-dir", "#{HOMEBREW_PREFIX}/var/openstory",
       "--manage-nats",
-      "--nats-bin", "#{Formula["nats-server"].opt_bin}/nats-server"
+      "--nats-bin", "#{HOMEBREW_PREFIX}/opt/nats-server/bin/nats-server"
     ]
     keep_alive true
     log_path var/"log/openstory.log"
